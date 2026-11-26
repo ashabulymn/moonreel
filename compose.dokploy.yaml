@@ -79,7 +79,10 @@ services:
       - moonreel-storage:/app/storage
       - moonreel-niches:/app/niches
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/ || exit 1"]
+      # JANGAN pakai wget: image node:22-bookworm-slim tidak punya wget,
+      # healthcheck gagal terus -> Traefik mengecualikan container -> 404 +
+      # sertifikat tidak terbit (kejadian deploy pertama 26 Nov 2026).
+      test: ["CMD-SHELL", "node -e \"require('http').get('http://127.0.0.1:3000/',r=>process.exit(r.statusCode<400?0:1)).on('error',()=>process.exit(1))\""]
       interval: 10s
       timeout: 5s
       retries: 30
