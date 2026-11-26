@@ -1,0 +1,115 @@
+# =============================================================================
+# MoonReel untuk Dokploy LABS — Compose service.
+# File ini HARUS di root repo (Dokploy tidak memakai --project-directory;
+# lihat pelajaran MuseCanvas di AGENTS.md).
+#
+# Yang dipakai — dan yang tidak:
+# - muse2api TIDAK dijalankan di sini. Dipakai muse2api yang sudah live di
+#   https://muse2api.masyamin.biz.id, akun Muse sudah diimpor di sana (1 akun,
+#   terverifikasi 26 Nov 2026). MoonReel hanya memanggilnya lewat
+#   MUSE2API_BASE_URL + MUSE2API_KEY yang sama dengan muse-canvas.
+#   Alasan: compose bawaan upstream membangun muse2api bynne2602 (lama,
+#   butuh patch cookie 27 Okt 2026) dan akan bentrok port 18610 + pool akun
+#   dengan muse2api live.
+# - Postgres 17 di sini (service postgres), job queue pg-boss di DB yang sama.
+# - web = Next.js port 3000, worker = job worker + FFmpeg render,
+#   db-migrate = drizzle-kit push + seed (sekali jalan, aman diulang).
+#
+# Di Dokploy: Compose service di project LABS, Compose Path =
+# compose.dokploy.yaml, domain moonreel.masyamin.biz.id -> service web:3000,
+# Auto Deploy OFF. Env diisi di menu Environment Dokploy (JANGAN di repo):
+#   POSTGRES_PASSWORD = password Postgres baru (kuat, acak)
+#   MUSE2API_KEY      = key yang sama dengan muse2api live / muse-canvas
+# =============================================================================
+
+name: moonreel
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: moonreel
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: moonreel
+    volumes:
+      - moonreel-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U moonreel -d moonreel"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  db-migrate:
+    build:
+      context: ./moonreel-studio
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # Tanpa --env-file: env sudah datang dari container (Dokploy).
+    command: ["sh", "-c", "pnpm exec drizzle-kit push && pnpm exec tsx scripts/seed.ts"]
+    environment:
+      DATABASE_URL: postgres://moonreel:${POSTGRES_PASSWORD}@postgres:5432/moonreel
+      MUSE2API_BASE_URL: https://muse2api.masyamin.biz.id
+      MUSE2API_KEY: ${MUSE2API_KEY:?MUSE2API_KEY is required}
+      MUSE_CONCURRENCY: 1
+      STORAGE_DIR: /app/storage
+      NICHES_DIR: /app/niches
+      TZ: Asia/Jakarta
+
+  web:
+    build:
+      context: ./moonreel-studio
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      db-migrate:
+        condition: service_completed_successfully
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://moonreel:${POSTGRES_PASSWORD}@postgres:5432/moonreel
+      MUSE2API_BASE_URL: https://muse2api.masyamin.biz.id
+      MUSE2API_KEY: ${MUSE2API_KEY:?MUSE2API_KEY is required}
+      MUSE_CONCURRENCY: 1
+      STORAGE_DIR: /app/storage
+      NICHES_DIR: /app/niches
+      TZ: Asia/Jakarta
+    volumes:
+      - moonreel-storage:/app/storage
+      - moonreel-niches:/app/niches
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  worker:
+    build:
+      context: ./moonreel-studio
+      dockerfile: Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      db-migrate:
+        condition: service_completed_successfully
+    # Tanpa --env-file: env sudah datang dari container (Dokploy).
+    command: ["pnpm", "exec", "tsx", "src/worker/index.ts"]
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://moonreel:${POSTGRES_PASSWORD}@postgres:5432/moonreel
+      MUSE2API_BASE_URL: https://muse2api.masyamin.biz.id
+      MUSE2API_KEY: ${MUSE2API_KEY:?MUSE2API_KEY is required}
+      MUSE_CONCURRENCY: 1
+      STORAGE_DIR: /app/storage
+      NICHES_DIR: /app/niches
+      TZ: Asia/Jakarta
+    volumes:
+      - moonreel-storage:/app/storage
+      - moonreel-niches:/app/niches
+
+volumes:
+  moonreel-pgdata: {}
+  moonreel-storage: {}
+  moonreel-niches: {}
