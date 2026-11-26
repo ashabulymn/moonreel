@@ -1,15 +1,15 @@
-export const LOCALES = ["en", "vi"] as const;
+export const LOCALES = ["en"] as const;
 export type Locale = (typeof LOCALES)[number];
 
 /** Used when the browser asks for none of the supported languages. */
 export const DEFAULT_LOCALE: Locale = "en";
 
-/** Set by the language switcher; overrides the browser's Accept-Language. */
+/** English only: the language switcher was removed, so this cookie is no longer set. */
 export const LOCALE_COOKIE = "moonreel_locale";
 
 export const hasLocale = (value: unknown): value is Locale => LOCALES.includes(value as Locale);
 
-/** Best supported locale for an Accept-Language header such as "vi-VN,vi;q=0.9,en;q=0.8". */
+/** Best supported locale for an Accept-Language header. English only. */
 export function matchAcceptLanguage(header: string | null | undefined): Locale | null {
   if (!header) return null;
   const ranked = header
@@ -25,8 +25,7 @@ export function matchAcceptLanguage(header: string | null | undefined): Locale |
   return match ? (match.lang as Locale) : null;
 }
 
-/** The explicit choice wins, then the browser's preference, then English. */
-export function resolveLocale(cookie: string | null | undefined, acceptLanguage: string | null | undefined): Locale {
-  if (hasLocale(cookie)) return cookie;
-  return matchAcceptLanguage(acceptLanguage) ?? DEFAULT_LOCALE;
+/** English only, whatever the browser or cookie says. */
+export function resolveLocale(_cookie: string | null | undefined, _acceptLanguage: string | null | undefined): Locale {
+  return DEFAULT_LOCALE;
 }

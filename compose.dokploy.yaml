@@ -47,7 +47,9 @@ services:
       postgres:
         condition: service_healthy
     # Tanpa --env-file: env sudah datang dari container (Dokploy).
-    command: ["sh", "-c", "pnpm exec drizzle-kit push && pnpm exec tsx scripts/seed.ts"]
+    # update-default-niches-en.ts: English-only fork — tulis ulang 4 niche
+    # contoh yang sudah ter-seed (seed.ts hanya insert, tidak update).
+    command: ["sh", "-c", "pnpm exec drizzle-kit push && pnpm exec tsx scripts/seed.ts && pnpm exec tsx scripts/update-default-niches-en.ts"]
     environment:
       DATABASE_URL: postgres://moonreel:${POSTGRES_PASSWORD}@postgres:5432/moonreel
       MUSE2API_BASE_URL: https://muse2api.masyamin.biz.id

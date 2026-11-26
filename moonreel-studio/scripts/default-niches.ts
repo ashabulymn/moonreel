@@ -3,6 +3,11 @@ import type { niches } from "@/db/schema";
 /**
  * The sample niches that ship with MoonReel. Your own niches belong in private niche files
  * (see private-niches.ts), not here: this file is public.
+ *
+ * English only (fork change): the upstream samples were Vietnamese.
+ * Slugs are unchanged, so existing installs keep their rows; the
+ * update-default-niches-en.ts script rewrites the seeded rows to these
+ * English values on deploy.
  */
 export const DEFAULT_NICHES: (typeof niches.$inferInsert)[] = [
   {
@@ -11,19 +16,19 @@ export const DEFAULT_NICHES: (typeof niches.$inferInsert)[] = [
     thumbnailAccent: "#34D399",
     thumbnailBrand: "",
     icon: "💰",
-    name: "Tài chính cá nhân",
-    description: "Kiến thức tiền bạc thực tế cho người trẻ đi làm.",
+    name: "Personal Finance",
+    description: "Practical money knowledge for young working people.",
     scriptInstructions: [
-      "- Mở đầu bằng một con số hoặc sai lầm phổ biến gây giật mình.",
-      "- Mỗi cảnh một ý duy nhất, có ví dụ bằng tiền Việt Nam cụ thể.",
-      "- Không hứa hẹn làm giàu nhanh, không khuyến nghị mua mã cổ phiếu/coin cụ thể.",
-      "- Kết thúc: kêu gọi follow để nhận mẹo tiếp theo.",
+      "- Open with a surprising number or a common money mistake.",
+      "- One idea per scene, with a concrete example in US dollars.",
+      "- No get-rich-quick promises, no recommendation to buy a specific stock or coin.",
+      "- End by asking viewers to follow for the next tip.",
     ].join("\n"),
-    tone: "Thân thiện, rõ ràng, như một người anh/chị đi trước",
+    tone: "Friendly and clear, like a helpful older sibling",
     visualStyle: "clean modern 3D animation, soft warm lighting, pastel colors",
     sceneCount: 6,
     sceneSeconds: 10,
-    language: "Vietnamese",
+    language: "English",
   },
   {
     slug: "did-you-know",
@@ -31,18 +36,18 @@ export const DEFAULT_NICHES: (typeof niches.$inferInsert)[] = [
     thumbnailAccent: "#FFD23F",
     thumbnailBrand: "",
     icon: "🔭",
-    name: "Sự thật thú vị",
-    description: "Những sự thật bất ngờ về khoa học, lịch sử, thế giới.",
+    name: "Did You Know",
+    description: "Surprising facts about science, history, and the world.",
     scriptInstructions: [
-      "- Câu đầu tiên dạng 'Bạn có biết…?' với một sự thật khó tin.",
-      "- Giải thích ngắn gọn vì sao điều đó đúng, chỉ dùng thông tin đã được kiểm chứng.",
-      "- Cảnh cuối đặt một câu hỏi để người xem bình luận.",
+      "- Start with a 'Did you know…?' line and a hard-to-believe fact.",
+      "- Explain briefly why it is true, using only verified information.",
+      "- End with a question that invites viewers to comment.",
     ].join("\n"),
-    tone: "Tò mò, hào hứng",
+    tone: "Curious, excited",
     visualStyle: "vibrant stylized 3D, cinematic lighting, rich detail",
     sceneCount: 5,
     sceneSeconds: 10,
-    language: "Vietnamese",
+    language: "English",
   },
   {
     slug: "night-stories",
@@ -50,18 +55,18 @@ export const DEFAULT_NICHES: (typeof niches.$inferInsert)[] = [
     thumbnailAccent: "#9DB8FF",
     thumbnailBrand: "",
     icon: "🌙",
-    name: "Truyện kể đêm khuya",
-    description: "Truyện bí ẩn / kinh dị nhẹ, kể theo ngôi thứ nhất.",
+    name: "Late Night Stories",
+    description: "Mild mystery / horror stories, told in the first person.",
     scriptInstructions: [
-      "- Kể theo mạch: bối cảnh → điều bất thường → cao trào → cái kết mở.",
-      "- Không máu me, không bạo lực chi tiết.",
-      "- Cảnh cuối mời người xem đoán cái kết trong bình luận.",
+      "- Follow the arc: setting → something strange → climax → open ending.",
+      "- No gore, no graphic violence.",
+      "- End by inviting viewers to guess the ending in the comments.",
     ].join("\n"),
-    tone: "Thì thầm, chậm rãi, hồi hộp",
+    tone: "Whispered, slow, suspenseful",
     visualStyle: "moody cinematic, low key lighting, blue and amber tones, light fog",
     sceneCount: 6,
     sceneSeconds: 10,
-    language: "Vietnamese",
+    language: "English",
   },
   {
     slug: "ai-tech-tips",
@@ -69,18 +74,18 @@ export const DEFAULT_NICHES: (typeof niches.$inferInsert)[] = [
     thumbnailAccent: "#FFC23D",
     thumbnailBrand: "",
     icon: "🤖",
-    name: "Mẹo công nghệ & AI",
-    description: "Hướng dẫn nhanh công cụ AI và mẹo công nghệ dùng ngay được.",
+    name: "AI & Tech Tips",
+    description: "Quick guides to AI tools and tech tips you can use right away.",
     scriptInstructions: [
-      "- Mở đầu bằng lợi ích cụ thể (tiết kiệm bao nhiêu thời gian/tiền).",
-      "- Các bước làm theo thứ tự, mỗi cảnh một bước.",
-      "- Kết thúc: lưu video lại và follow.",
+      "- Open with a concrete benefit (how much time or money it saves).",
+      "- Steps in order, one step per scene.",
+      "- End by asking viewers to save the video and follow.",
     ].join("\n"),
-    tone: "Năng động, tự tin, dễ hiểu",
+    tone: "Energetic, confident, easy to follow",
     visualStyle: "sleek futuristic office, neon accent lighting, crisp 3D render",
     sceneCount: 6,
     sceneSeconds: 10,
-    language: "Vietnamese",
+    language: "English",
   },
 ];
 

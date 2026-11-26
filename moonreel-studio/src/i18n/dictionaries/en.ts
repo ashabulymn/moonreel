@@ -8,7 +8,7 @@ const en = {
   },
   language: {
     label: "Language",
-    names: { en: "English", vi: "Tiếng Việt" },
+    names: { en: "English" },
   },
   nav: {
     overview: "Overview",

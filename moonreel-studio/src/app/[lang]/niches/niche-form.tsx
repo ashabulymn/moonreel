@@ -210,7 +210,7 @@ export function NicheForm({
             <input name="tone" defaultValue={niche?.tone} className={inputClass} placeholder={f.tonePlaceholder} />
           </Field>
           <Field label={f.language}>
-            <input name="language" required defaultValue={niche?.language ?? "Vietnamese"} className={inputClass} />
+            <input name="language" required defaultValue={niche?.language ?? "English"} className={inputClass} />
           </Field>
         </div>
         {/* Only story videos are narrated: ambient ones play the uploaded soundtrack, wordless ones have no words. */}

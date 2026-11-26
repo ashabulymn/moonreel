@@ -121,7 +121,7 @@ export const niches = pgTable("niches", {
   visualStyle: text("visual_style").notNull().default(""),
   sceneCount: integer("scene_count").notNull().default(6),
   sceneSeconds: integer("scene_seconds").notNull().default(10),
-  language: text("language").notNull().default("Vietnamese"),
+  language: text("language").notNull().default("English"),
   icon: text("icon").notNull().default("✦"),
   format: nicheFormatEnum("format").notNull().default("story"),
   /** Ambient only: every shot reuses scene 1's keyframe, so the camera never changes angle. */
